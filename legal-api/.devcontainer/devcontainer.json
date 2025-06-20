@@ -26,8 +26,7 @@
             "type": "bind"
         }
     ],
-	// "forwardPorts": [5432],
-
+		// "forwardPorts": [5432],
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
