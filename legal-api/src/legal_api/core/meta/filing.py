@@ -487,6 +487,79 @@ FILINGS: Final = {
                 'CCC': 'COURT',
         }
     },
+    'delayDissolution': {
+        'name': 'delayDissolution',
+        'title': 'Delay Dissolution',
+        'displayName': 'Delay Dissolution',
+        'additional': [
+            {
+                'types': ['CP'],
+                'outputs': ['certificateOfDissolution', 'affidavit']
+            },
+            {
+                'types': ['BC', 'BEN', 'CC', 'ULC', 'C', 'CBEN', 'CCC', 'CUL'],
+                'outputs': ['certificateOfDissolution']
+            },
+        ],
+        'voluntary': {
+            'title': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+            'displayName': {
+                'CP': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'BC': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'BEN': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'ULC': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'CC': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'SP': ReportTitles.STATEMENT_DISSOLUTION.value,
+                'GP': ReportTitles.STATEMENT_DISSOLUTION.value,
+                'C': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'CBEN': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'CUL': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+                'CCC': ReportTitles.VOLUNTARY_DISSOLUTION.value,
+            },
+            'codes': {
+                'CP': 'DIS_VOL',
+                'BC': 'DIS_VOL',
+                'BEN': 'DIS_VOL',
+                'ULC': 'DIS_VOL',
+                'CC': 'DIS_VOL',
+                'SP': 'DIS_VOL',
+                'GP': 'DIS_VOL',
+                'C': 'DIS_VOL',
+                'CBEN': 'DIS_VOL',
+                'CUL': 'DIS_VOL',
+                'CCC': 'DIS_VOL'
+            },
+        },
+        'administrative': {
+            'title': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+            'displayName': {
+                'CP': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'BC': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'BEN': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'ULC': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'CC': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'SP': ReportTitles.STATEMENT_DISSOLUTION.value,
+                'GP': ReportTitles.STATEMENT_DISSOLUTION.value,
+                'C': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'CBEN': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'CUL': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+                'CCC': ReportTitles.ADMINISTRATIVE_DISSOLUTION.value,
+            },
+            'codes': {
+                'CP': 'DIS_VOL',
+                'BC': 'DIS_VOL',
+                'BEN': 'DIS_VOL',
+                'ULC': 'DIS_VOL',
+                'CC': 'DIS_VOL',
+                'SP': 'DIS_VOL',
+                'GP': 'DIS_VOL',
+                'C': 'DIS_ADM',
+                'CBEN': 'DIS_ADM',
+                'CUL': 'DIS_ADM',
+                'CCC': 'DIS_ADM'
+            },
+        }
+    },
     'dissolution': {
         'name': 'dissolution',
         'additional': [

@@ -88,6 +88,7 @@ class Filing:  # pylint: disable=too-many-public-methods
         CONVERSION = 'conversion'
         CORRECTION = 'correction'
         COURTORDER = 'courtOrder'
+        DELAYDISSOLUTION = 'delayDissolution'
         DISSOLUTION = 'dissolution'
         DISSOLVED = 'dissolved'
         INCORPORATIONAPPLICATION = 'incorporationApplication'

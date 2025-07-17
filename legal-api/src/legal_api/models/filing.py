@@ -392,6 +392,47 @@ class Filing(db.Model):  # pylint: disable=too-many-instance-attributes,too-many
                 'CCC': 'COURT',
             }
         },
+        'delayDissolution': {
+            'name': 'delayDissolution',
+            'title': 'Delay Dissolution',
+            'displayName': 'Delay Dissolution',
+            'voluntary': {
+                'name': 'voluntary',
+                'title': 'Voluntary Dissolution',
+                'codes': {
+                    'CP': 'DIS_VOL',
+                    'BC': 'DIS_VOL',
+                    'BEN': 'DIS_VOL',
+                    'ULC': 'DIS_VOL',
+                    'CC': 'DIS_VOL',
+                    'LLC': 'DIS_VOL',
+                    'SP': 'DIS_VOL',
+                    'GP': 'DIS_VOL',
+                    'C': 'DIS_VOL',
+                    'CBEN': 'DIS_VOL',
+                    'CUL': 'DIS_VOL',
+                    'CCC': 'DIS_VOL',
+                }
+            },
+            'administrative': {
+                'name': 'administrative',
+                'title': 'Administrative Dissolution',
+                'codes': {
+                    'CP': 'DIS_ADM',
+                    'BC': 'DIS_ADM',
+                    'BEN': 'DIS_ADM',
+                    'ULC': 'DIS_ADM',
+                    'CC': 'DIS_ADM',
+                    'LLC': 'DIS_ADM',
+                    'SP': 'DIS_ADM',
+                    'GP': 'DIS_ADM',
+                    'C': 'DIS_ADM',
+                    'CBEN': 'DIS_ADM',
+                    'CUL': 'DIS_ADM',
+                    'CCC': 'DIS_ADM',
+                }
+            }
+        },
         'dissolution': {
             'name': 'dissolution',
             'voluntary': {

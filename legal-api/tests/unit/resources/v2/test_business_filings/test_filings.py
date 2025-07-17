@@ -41,6 +41,7 @@ from registry_schemas.example_data import (
     CORRECTION_AR,
     CORRECTION_INCORPORATION,
     CP_SPECIAL_RESOLUTION_TEMPLATE,
+    DELAY_DISSOLUTION,
     DISSOLUTION,
     FILING_HEADER,
     INCORPORATION,
@@ -77,7 +78,7 @@ from tests.unit.models import (  # noqa:E501,I001
 )
 from tests.unit.services.filings.test_utils import _upload_file
 from tests.unit.services.utils import create_header
-
+from dateutil.relativedelta import relativedelta
 
 @pytest.mark.parametrize(
     'legal_type, filing_type, filing_json',
@@ -1862,6 +1863,68 @@ def test_notice_of_withdrawal_filing(session, client, jwt, test_name, legal_type
     assert rv_draft.status_code == HTTPStatus.ACCEPTED
     assert rv_draft.json['filing']['header']['certifiedBy'] == 'test123'
 
+@pytest.mark.parametrize(
+    'test_name, legal_type, identifier',
+    [
+        ('BEN', Business.LegalTypes.BCOMP.value, 'BC1111111'),
+        ('ULC', Business.LegalTypes.BC_ULC_COMPANY.value, 'BC1111112'),
+        ('CC', Business.LegalTypes.BC_CCC.value, 'BC1111113'),
+        ('BC', Business.LegalTypes.COMP.value, 'BC1111114'),
+        ('C', Business.LegalTypes.CONTINUE_IN.value, 'BC1111115'),
+        ('CBEN', Business.LegalTypes.BCOMP_CONTINUE_IN.value, 'BC1111116'),
+        ('CUL', Business.LegalTypes.ULC_CONTINUE_IN.value, 'BC1111117'),
+        ('CCC', Business.LegalTypes.CCC_CONTINUE_IN.value, 'BC1111118'),
+    ]
+)
+
+def test_dissolution(session, requests_mock, client, jwt, test_name, legal_type, identifier):
+    """Assert delay of dissolution is submitted correctly for entity types."""
+    # business = factory_business(identifier)
+    now = datetime.now().date()
+    one_year = now + relativedelta(years=1)
+
+    filing = copy.deepcopy(FILING_HEADER)
+    filing['filing']['header']['name'] = 'dissolution'
+    filing['filing']['dissolution'] = copy.deepcopy(DISSOLUTION)
+    filing['filing']['dissolution']['dissolutionDate'] = f"{one_year}"
+    filing['filing']['dissolution']['dissolutionType'] = 'voluntary'
+
+    court_order = {'effectOfOrder': 'planOfArrangement'}
+    court_order['fileNumber'] = '12345678901234567890'
+    filing['filing']['dissolution']['courtOrder'] = court_order
+
+    filing['filing']['dissolution']['parties'][1]['deliveryAddress'] = \
+        filing['filing']['dissolution']['parties'][1]['mailingAddress']
+    # filing['filing']['dissolution']['affidavitFileKey'] = _upload_file(letter, invalid=False)
+    if legal_type == Business.LegalTypes.COOP.value:
+        filing['filing']['dissolution']['affidavitFileKey'] = _upload_file(letter, invalid=False)
+    else:
+        del filing['filing']['dissolution']['affidavitFileKey']
+
+    b = factory_business(identifier, (datetime.utcnow() - datedelta.YEAR), None, legal_type)
+    factory_business_mailing_address(b)
+    filing['filing']['business']['identifier'] = identifier
+    filing['filing']['business']['legalType'] = legal_type
+
+    requests_mock.post(
+        current_app.config.get('PAYMENT_SVC_URL'),
+        json={
+                'id': 21322,
+                'statusCode': 'COMPLETED',
+                'isPaymentActionRequired': False
+            },
+        status_code=HTTPStatus.CREATED
+    )
+
+    rv = client.post(
+        f'/api/v2/businesses/{identifier}/filings',
+        json=filing,
+        headers=create_header(jwt, [STAFF_ROLE], identifier)
+    )
+
+    print(rv.json if rv.is_json else rv.data.decode())
+
+    assert rv.status_code == HTTPStatus.CREATED
 
 @pytest.mark.parametrize(
     'test_name, legal_type, identifier',
@@ -1903,3 +1966,67 @@ def test_coo(session, requests_mock, client, jwt, test_name, legal_type, identif
     )
 
     assert rv.status_code == HTTPStatus.CREATED
+
+@pytest.mark.parametrize(
+    'test_name, legal_type, identifier',
+    [
+        ('BEN', Business.LegalTypes.BCOMP.value, 'BC1111111'),
+        ('ULC', Business.LegalTypes.BC_ULC_COMPANY.value, 'BC1111112'),
+        ('CC', Business.LegalTypes.BC_CCC.value, 'BC1111113'),
+        ('BC', Business.LegalTypes.COMP.value, 'BC1111114'),
+        ('C', Business.LegalTypes.CONTINUE_IN.value, 'BC1111115'),
+        ('CBEN', Business.LegalTypes.BCOMP_CONTINUE_IN.value, 'BC1111116'),
+        ('CUL', Business.LegalTypes.ULC_CONTINUE_IN.value, 'BC1111117'),
+        ('CCC', Business.LegalTypes.CCC_CONTINUE_IN.value, 'BC1111118'),
+    ]
+)
+
+def test_delay_dissolution(session, requests_mock, client, jwt, test_name, legal_type, identifier):
+    """Assert delay of dissolution is submitted correctly for entity types."""
+    # business = factory_business(identifier)
+    now = datetime.now().date()
+    one_year = now + relativedelta(years=1)
+
+    filing = copy.deepcopy(FILING_HEADER)
+    filing['filing']['header']['name'] = 'delayDissolution'
+    filing['filing']['delayDissolution'] = copy.deepcopy(DELAY_DISSOLUTION)
+    filing['filing']['delayDissolution']['dissolutionDate'] = f"{one_year}"
+    filing['filing']['delayDissolution']['dissolutionType'] = 'voluntary'
+
+    court_order = {'effectOfOrder': 'planOfArrangement'}
+    court_order['fileNumber'] = '12345678901234567890'
+    filing['filing']['delayDissolution']['courtOrder'] = court_order
+
+    filing['filing']['delayDissolution']['parties'][1]['deliveryAddress'] = \
+        filing['filing']['delayDissolution']['parties'][1]['mailingAddress']
+    # filing['filing']['dissolution']['affidavitFileKey'] = _upload_file(letter, invalid=False)
+    if legal_type == Business.LegalTypes.COOP.value:
+        filing['filing']['delayDissolution']['affidavitFileKey'] = _upload_file(letter, invalid=False)
+    else:
+        del filing['filing']['delayDissolution']['affidavitFileKey']
+
+    b = factory_business(identifier, (datetime.utcnow() - datedelta.YEAR), None, legal_type)
+    factory_business_mailing_address(b)
+    filing['filing']['business']['identifier'] = identifier
+    filing['filing']['business']['legalType'] = legal_type
+   
+    requests_mock.post(
+        current_app.config.get('PAYMENT_SVC_URL'),
+        json={
+                'id': 21322,
+                'statusCode': 'COMPLETED',
+                'isPaymentActionRequired': False
+            },
+        status_code=HTTPStatus.CREATED
+    )
+
+    rv = client.post(
+        f'/api/v2/businesses/{identifier}/filings',
+        json=filing,
+        headers=create_header(jwt, [STAFF_ROLE], identifier)
+    )
+
+    print(rv.json if rv.is_json else rv.data.decode())
+
+    assert rv.status_code == HTTPStatus.CREATED
+

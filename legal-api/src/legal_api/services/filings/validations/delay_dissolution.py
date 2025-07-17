@@ -41,7 +41,7 @@ def validate(business: Business, delayDissolution: Dict) -> Optional[Error]:
     if err:
         msg.extend(err)
 
-    err = validate_delays(delayDissolution)
+    err = validate_delays(business)
     if err:
         msg.extend(err)
 
@@ -52,7 +52,8 @@ def validate(business: Business, delayDissolution: Dict) -> Optional[Error]:
 def validate_business_state(business) -> Optional[list]:
     """Validate busness is not frozen"""
     msg = []
-    current_state = business.admin_freeze or False
+    #current_state = business.admin_freeze or False
+    current_state = getattr(business, 'admin_freeze', False)
 
     if current_state == True:
         msg.append({'error': _('Dissolution cannot be delayed on frozen businesses.'), 'path': '/business/adminFreeze'})
@@ -61,14 +62,17 @@ def validate_business_state(business) -> Optional[list]:
     return None
 
 
-def validate_delays(filing_json) -> Optional[list]:
+def validate_delays(business) -> Optional[list]:
     """Validate number of delays"""
     msg = []
     
-    dissolution_delay_path = '/filing/delayDissolution/numberOfDelays'
-    dissolution_delay_number = get_int(filing_json, dissolution_delay_path)
+    dissolution_delay_path = '/business/number_of_dissolution_delays'
 
-    #may need to hit database to check numberOfDelays
+    if getattr(business, 'number_of_dissolution_delays', None):
+        dissolution_delay_number = business.number_of_dissolution_delays
+    else:
+        dissolution_delay_number = 0
+
 
     if dissolution_delay_number >= 2:
         msg.append({'error': _('Dissolution may only be delayed twice'), 'path': dissolution_delay_path})

@@ -42,6 +42,7 @@ from .continuation_out import validate as continuation_out_validate
 from .conversion import validate as conversion_validate
 from .correction import validate as correction_validate
 from .court_order import validate as court_order_validate
+from .delay_dissolution import validate as delay_dissolution_validate
 from .dissolution import DissolutionTypes
 from .dissolution import validate as dissolution_validate
 from .incorporation_application import validate as incorporation_application_validate
@@ -62,7 +63,10 @@ def validate(business: Business,  # pylint: disable=too-many-branches,too-many-s
              filing_json: Dict,
              account_id=None) -> Error:
     """Validate the filing JSON."""
-    err = validate_against_schema(filing_json)
+    try:
+        err = validate_against_schema(filing_json)
+    except Exception as err:
+        print(err)
     if err:
         return err
 
@@ -136,6 +140,9 @@ def validate(business: Business,  # pylint: disable=too-many-branches,too-many-s
 
                 elif k == Filing.FILINGS['changeOfOfficers'].get('name'):
                     err = coo_validate(business, filing_json)
+                    
+                elif k == Filing.FILINGS['delayDissolution'].get('name'):
+                    err = delay_dissolution_validate(business, filing_json)
 
                 elif k == Filing.FILINGS['dissolution'].get('name'):
                     err = dissolution_validate(business, filing_json)

@@ -193,6 +193,7 @@ class Business(db.Model, Versioned):  # pylint: disable=too-many-instance-attrib
             'association_type',
             'continuation_out_date',
             'dissolution_date',
+            'number_of_dissolution_delays',
             'fiscal_year_end_date',
             'foreign_jurisdiction_region',
             'foreign_legal_name',
@@ -262,6 +263,7 @@ class Business(db.Model, Versioned):  # pylint: disable=too-many-instance-attrib
     send_ar_ind = db.Column('send_ar_ind', db.Boolean, unique=False, default=True)
     no_dissolution = db.Column('no_dissolution', db.Boolean, unique=False, default=False)
     accession_number = db.Column('accession_number', db.String(10))
+    number_of_dissolution_delays = db.Column('number_of_dissolution_delays', db.Integer)
 
     naics_key = db.Column(db.String(50))
     naics_code = db.Column(db.String(10))

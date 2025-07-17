@@ -314,6 +314,16 @@ def get_allowable_filings_dict():
                 'courtOrder': {
                     'legalTypes': ['SP', 'GP', 'CP', 'BC', 'BEN', 'CC', 'ULC', 'C', 'CBEN', 'CUL', 'CCC']
                 },
+                'delayDissolution': {
+                    'voluntary': {
+                        'legalTypes': ['CP', 'BC', 'BEN', 'CC', 'ULC', 'SP', 'GP', 'C', 'CBEN', 'CUL', 'CCC'],
+                        'blockerChecks': {
+                            'warningTypes': [WarningType.MISSING_REQUIRED_BUSINESS_INFO],
+                            'business': [BusinessBlocker.DEFAULT,
+                                         BusinessBlocker.BUSINESS_FROZEN]
+                        }
+                    }
+                },
                 'dissolution': {
                     'voluntary': {
                         'legalTypes': ['CP', 'BC', 'BEN', 'CC', 'ULC', 'SP', 'GP', 'C', 'CBEN', 'CUL', 'CCC'],
@@ -529,6 +539,16 @@ def get_allowable_filings_dict():
                     'legalTypes': ['C', 'CBEN', 'CUL', 'CCC'],
                     # only show filing when providing allowable filings not specific to a business
                     'businessRequirement': BusinessRequirement.NOT_EXIST
+                },
+                'delayDissolution': {
+                    'voluntary': {
+                        'legalTypes': ['CP', 'BC', 'BEN', 'CC', 'ULC', 'SP', 'GP', 'C', 'CBEN', 'CUL', 'CCC'],
+                        'blockerChecks': {
+                            'warningTypes': [WarningType.MISSING_REQUIRED_BUSINESS_INFO],
+                            'business': [BusinessBlocker.DEFAULT,
+                                         BusinessBlocker.BUSINESS_FROZEN]
+                        }
+                    },
                 },
                 'dissolution': {
                     'voluntary': {

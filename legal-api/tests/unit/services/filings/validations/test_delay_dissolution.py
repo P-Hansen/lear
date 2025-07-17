@@ -18,7 +18,7 @@ from http import HTTPStatus
 from unittest.mock import patch
 
 import pytest
-from registry_schemas.example_data import FILING_HEADER, DELAY_DISSOLUTION, SPECIAL_RESOLUTION
+from registry_schemas.example_data import FILING_HEADER, DISSOLUTION, SPECIAL_RESOLUTION
 from reportlab.lib.pagesizes import letter
 
 from legal_api.models import Business
@@ -49,13 +49,11 @@ def test_status_not_frozen(session, test_status, admin_freeze, expected_code, ex
 
     filing = copy.deepcopy(FILING_HEADER)
     filing['filing']['header']['name'] = 'delayDissolution'
-    filing['filing']['delayDissolution'] = copy.deepcopy(DELAY_DISSOLUTION)
+    filing['filing']['delayDissolution'] = copy.deepcopy(DISSOLUTION)
     filing['filing']['delayDissolution']['dissolutionDate'] = f"{one_year}"
     filing['filing']['delayDissolution']['parties'][1]['deliveryAddress'] = \
         filing['filing']['delayDissolution']['parties'][1]['mailingAddress']
     
-  
-    #with patch.object(delay_dissolution, 'validate_affidavit', return_value=None):
     err = validate(business, filing)
 
     # validate outcomes
@@ -78,15 +76,14 @@ def test_status_not_frozen(session, test_status, admin_freeze, expected_code, ex
 def test_number_of_dissolution_delays(session, test_status, number_of_delays, expected_code, expected_msg):
     """Assert that the number of delays can be validated."""
     # setup
-    business = Business(identifier='BC1234567')
+    business = Business(identifier='BC1234567', number_of_dissolution_delays=number_of_delays)
     now = datetime.now().date()
     one_year = now + relativedelta(years=1)
 
     filing = copy.deepcopy(FILING_HEADER)
     filing['filing']['header']['name'] = 'delayDissolution'
-    filing['filing']['delayDissolution'] = copy.deepcopy(DELAY_DISSOLUTION)
+    filing['filing']['delayDissolution'] = copy.deepcopy(DISSOLUTION)
     filing['filing']['delayDissolution']['dissolutionDate'] = f"{one_year}"
-    filing['filing']['delayDissolution']['numberOfDelays'] = number_of_delays
     filing['filing']['delayDissolution']['parties'][1]['deliveryAddress'] = \
         filing['filing']['delayDissolution']['parties'][1]['mailingAddress']
     
@@ -126,7 +123,7 @@ def test_delay_dissolution_dates(session, test_status, dissolutionDate, expected
  
     filing = copy.deepcopy(FILING_HEADER)
     filing['filing']['header']['name'] = 'delayDissolution'
-    filing['filing']['delayDissolution'] = copy.deepcopy(DELAY_DISSOLUTION)
+    filing['filing']['delayDissolution'] = copy.deepcopy(DISSOLUTION)
     filing['filing']['delayDissolution']['dissolutionDate'] = f"{dissolutionDate}"
     filing['filing']['delayDissolution']['parties'][1]['deliveryAddress'] = \
         filing['filing']['delayDissolution']['parties'][1]['mailingAddress']
